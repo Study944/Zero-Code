@@ -1,4 +1,4 @@
-package com.zerocode.core;
+package com.zerocode.core.saver;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * 文件保存器
  */
+@Deprecated
 public class CodeFileSaver {
     // 根路径
     private static final String ROOT_PATH = System.getProperty("user.dir") + File.separator + "tmp";

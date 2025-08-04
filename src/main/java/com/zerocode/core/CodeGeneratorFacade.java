@@ -4,6 +4,9 @@ import com.zerocode.ai.AiGeneratorService;
 import com.zerocode.ai.GeneratorTypeEnum;
 import com.zerocode.ai.HtmlCodeResult;
 import com.zerocode.ai.MultiFileCodeResult;
+import com.zerocode.core.parser.CodeParser;
+import com.zerocode.core.saver.CodeFileSaver;
+import com.zerocode.core.saver.CodeFileSaverExecutor;
 import com.zerocode.exception.BusinessException;
 import com.zerocode.exception.ErrorCode;
 import jakarta.annotation.Resource;
@@ -34,10 +37,10 @@ public class CodeGeneratorFacade {
         switch (generatorTypeEnum) {
             case HTML:
                 HtmlCodeResult htmlCodeResult = aiGeneratorService.generateHtml(userPrompt);
-                return CodeFileSaver.saveHtmlCode(htmlCodeResult, generatorTypeEnum);
+                return CodeFileSaverExecutor.executeSaver(htmlCodeResult, generatorTypeEnum);
             case MULTI_FILE:
                 MultiFileCodeResult multiFileCodeResult = aiGeneratorService.generateMultiFile(userPrompt);
-                return CodeFileSaver.saveMultiFileCode(multiFileCodeResult, generatorTypeEnum);
+                return CodeFileSaverExecutor.executeSaver(multiFileCodeResult, generatorTypeEnum);
             default:
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "不支持的生成模式" + generatorTypeEnum.getValue());
         }
@@ -55,31 +58,34 @@ public class CodeGeneratorFacade {
             case HTML:
                 // 生成响应式对象Flux
                 Flux<String> htmlStream = aiGeneratorService.generateHtmlStream(userPrompt);
-                // 拼接为一个字符串
-                StringBuilder htmlCodeBuilder = new StringBuilder();
-                return htmlStream.doOnNext(string -> htmlCodeBuilder.append(string))
-                        .doOnComplete(() -> {
-                            // 拼接完成后，解析输出为 HtmlCodeResult 对象
-                            HtmlCodeResult htmlCodeResult = CodeParser.parseHtmlCode(htmlCodeBuilder.toString());
-                            // 文件写入
-                            File file = CodeFileSaver.saveHtmlCode(htmlCodeResult, generatorTypeEnum);
-                            log.info("文件保存成功：{}", file.getAbsolutePath());
-                        });
+                // 拼接返回
+                return saveStreamCode(htmlStream, generatorTypeEnum);
             case MULTI_FILE:
                 // 生成响应式对象Flux
                 Flux<String> multiFileStream = aiGeneratorService.generateMultiFileStream(userPrompt);
-                // 拼接为一个字符串
-                StringBuilder multiFileCodeBuilder = new StringBuilder();
-                return multiFileStream.doOnNext(string -> multiFileCodeBuilder.append(string))
-                        .doOnComplete(() -> {
-                            // 拼接完成后，解析输出为 MultiFileCodeResult 对象
-                            MultiFileCodeResult multiFileCodeResult = CodeParser.parseMultiFileCode(multiFileCodeBuilder.toString());
-                            // 文件写入
-                            File file = CodeFileSaver.saveMultiFileCode(multiFileCodeResult, generatorTypeEnum);
-                            log.info("文件保存成功：{}", file.getAbsolutePath());
-                        });
+                // 拼接返回
+                return saveStreamCode(multiFileStream, generatorTypeEnum);
             default:
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "不支持的生成模式" + generatorTypeEnum.getValue());
         }
+    }
+
+    /**
+     * 保存流式代码工具
+     * @param stream
+     * @param generatorTypeEnum
+     * @return
+     */
+    private Flux<String> saveStreamCode(Flux<String> stream, GeneratorTypeEnum generatorTypeEnum) {
+        // 拼接为一个字符串
+        StringBuilder codeBuilder = new StringBuilder();
+        return stream.doOnNext(string -> codeBuilder.append(string))
+                .doOnComplete(() -> {
+                    // 拼接完成后，解析输出为 MultiFileCodeResult 对象
+                    MultiFileCodeResult multiFileCodeResult = CodeParser.parseMultiFileCode(codeBuilder.toString());
+                    // 文件写入
+                    File file = CodeFileSaver.saveMultiFileCode(multiFileCodeResult, generatorTypeEnum);
+                    log.info("文件保存成功：{}", file.getAbsolutePath());
+                });
     }
 }

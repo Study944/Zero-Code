@@ -5,7 +5,7 @@ import com.zerocode.exception.ErrorCode;
 /**
  * 响应工具类
  */
-public class ResponseUtil {
+public class ResultUtil {
     /**
      * 成功
      * @param data

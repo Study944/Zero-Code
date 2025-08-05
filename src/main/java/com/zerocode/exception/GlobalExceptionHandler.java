@@ -1,6 +1,7 @@
 package com.zerocode.exception;
 
 import com.zerocode.common.BaseResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * 全局异常处理器
  */
 @RestControllerAdvice
+@Hidden
 @Slf4j
 public class GlobalExceptionHandler {
     /**

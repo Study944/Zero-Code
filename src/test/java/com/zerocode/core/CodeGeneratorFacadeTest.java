@@ -19,19 +19,19 @@ class CodeGeneratorFacadeTest {
 
     @Test
     void generateAndSaveCode() {
-        File file = codeGeneratorFacade.generateAndSaveCode("生成一个简易的个人博客网站，博主名字为：马牛", GeneratorTypeEnum.HTML);
+        File file = codeGeneratorFacade.generateAndSaveCode("生成一个简易的个人博客网站，博主名字为：马牛", GeneratorTypeEnum.HTML,3333333333L);
         Assertions.assertNotNull(file);
     }
 
     @Test
     void generateAndSaveMultiCode() {
-        File file = codeGeneratorFacade.generateAndSaveCode("生成一个简易的个人博客网站，代码控制在20行", GeneratorTypeEnum.MULTI_FILE);
+        File file = codeGeneratorFacade.generateAndSaveCode("生成一个简易的个人博客网站，代码控制在20行", GeneratorTypeEnum.MULTI_FILE,4444444444L);
         Assertions.assertNotNull(file);
     }
 
     @Test
     void generateAndSaveStreamCode() {
-        Flux<String> stringFlux = codeGeneratorFacade.generateAndSaveStreamCode("生成一个个人博客网站，博主为ZXC，github：https://github.com/Study944 ，主项目为ZeroCode前端生成器和build-your-agent智能体平台", GeneratorTypeEnum.MULTI_FILE);
+        Flux<String> stringFlux = codeGeneratorFacade.generateAndSaveStreamCode("生成一个个人博客网站，博主为ZXC，github：https://github.com/Study944 ，主项目为ZeroCode前端生成器和build-your-agent智能体平台", GeneratorTypeEnum.MULTI_FILE,33333L);
         List<String> block = stringFlux.collectList().block();
         Assertions.assertNotNull(stringFlux);
     }

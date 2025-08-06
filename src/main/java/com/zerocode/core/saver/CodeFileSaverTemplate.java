@@ -1,11 +1,12 @@
 package com.zerocode.core.saver;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.IdUtil;
 import com.zerocode.ai.GeneratorTypeEnum;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+
+import static com.zerocode.constant.AppConstant.APP_PATH;
 
 /**
  * 文件保存器模板
@@ -15,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 public abstract class CodeFileSaverTemplate<T> {
 
     // 根路径
-    private static final String ROOT_PATH = System.getProperty("user.dir") + File.separator + "tmp";
+    private static final String ROOT_PATH = APP_PATH;
 
     /**
      * 保存代码文件模板（使用final禁止子类重写）
@@ -23,9 +24,9 @@ public abstract class CodeFileSaverTemplate<T> {
      * @param generatorTypeEnum 生成类型
      * @return 文件
      */
-    public final File saveCodeFile(T codeResult, GeneratorTypeEnum generatorTypeEnum) {
+    public final File saveCodeFile(T codeResult, GeneratorTypeEnum generatorTypeEnum,Long appId) {
         // 获取唯一文件名
-        String uniqueFilePath = buildUniqueFilePath(generatorTypeEnum);
+        String uniqueFilePath = buildUniqueFilePath(generatorTypeEnum,appId);
         // 文件保存
         saveFile(uniqueFilePath, codeResult, generatorTypeEnum);
         // 返回文件
@@ -47,14 +48,14 @@ public abstract class CodeFileSaverTemplate<T> {
     }
 
     /**
-     * 生成唯一文件路径 跟路径/生成类型_雪花ID
+     * 生成唯一文件路径 跟路径/生成类型_应用ID
      *
      * @param generatorTypeEnum 生成类型
      * @return 文件路径
      */
-    private static String buildUniqueFilePath(GeneratorTypeEnum generatorTypeEnum) {
+    private static String buildUniqueFilePath(GeneratorTypeEnum generatorTypeEnum,Long appId) {
         String generatorType = generatorTypeEnum.getValue();
-        String uniqueFilePath = ROOT_PATH + File.separator + generatorType + "_" + IdUtil.getSnowflakeNextIdStr();
+        String uniqueFilePath = ROOT_PATH + File.separator + generatorType + "_" + appId;
         FileUtil.mkdir(uniqueFilePath);
         return uniqueFilePath;
     }

@@ -3,5 +3,21 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zerocode.mapper.AppMapper">
-
+    <resultMap id="BaseResultMap" type="com.zerocode.domain.entity.App">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="appName" column="app_name" jdbcType="VARCHAR"/>
+        <result property="appDesc" column="app_desc" jdbcType="VARCHAR"/>
+        <result property="appIcon" column="app_icon" jdbcType="VARCHAR"/>
+        <result property="initPrompt" column="init_prompt" jdbcType="VARCHAR"/>
+        <result property="generateType" column="generate_type" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="priority" column="priority" jdbcType="INTEGER"/>
+        <result property="deployKey" column="deploy_key" jdbcType="VARCHAR"/>
+        <result property="deployTime" column="deploy_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,app_name,app_desc,app_icon,init_prompt,generate_type,user_id,priority,deploy_key,deploy_time,create_time,update_time
+    </sql>
 </mapper>

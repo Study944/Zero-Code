@@ -10,14 +10,18 @@ import com.zerocode.ai.GeneratorTypeEnum;
 import com.zerocode.common.ResultUtil;
 import com.zerocode.common.ThrowUtil;
 import com.zerocode.core.CodeGeneratorFacade;
+import com.zerocode.core.parser.CodeParserExecutor;
+import com.zerocode.core.saver.CodeFileSaverExecutor;
 import com.zerocode.domain.dto.*;
 import com.zerocode.domain.entity.App;
 import com.zerocode.domain.entity.User;
+import com.zerocode.domain.enums.ChatHistoryMessageTypeEnum;
 import com.zerocode.domain.vo.AppVO;
 import com.zerocode.domain.vo.UserVO;
 import com.zerocode.exception.ErrorCode;
 import com.zerocode.mapper.AppMapper;
 import com.zerocode.service.AppService;
+import com.zerocode.service.ChatHistoryService;
 import com.zerocode.service.UserService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -39,6 +43,8 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
     private UserService userService;
     @Resource
     private CodeGeneratorFacade codeGeneratorFacade;
+    @Resource
+    private ChatHistoryService chatHistoryService;
 
     @Override
     public Long addApp(AppAddDTO appAddDTO, User loginUser) {
@@ -147,10 +153,19 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         App app = this.getById(appId);
         ThrowUtil.throwIf(app == null, ErrorCode.NOT_FOUND_ERROR, "应用不存在");
         ThrowUtil.throwIf(!app.getUserId().equals(loginUser.getId()), ErrorCode.NO_AUTH_ERROR);
+        // 保存对话历史--用户输入userPrompt
+        chatHistoryService.addChatMessage(appId, userPrompt,
+                ChatHistoryMessageTypeEnum.USER.getValue(), loginUser.getId());
         // AI生成应用
         Flux<String> stringFlux = codeGeneratorFacade.generateAndSaveStreamCode(userPrompt, generatorTypeEnum, appId);
-        // 流式输出响应
-        return stringFlux;
+        // 保存对话历史--AI生成代码
+        // 拼接为一个字符串
+        StringBuilder codeBuilder = new StringBuilder();
+        return stringFlux.doOnNext(string -> codeBuilder.append(string))
+                .doOnComplete(() -> {
+                    chatHistoryService.addChatMessage(appId, userPrompt,
+                            ChatHistoryMessageTypeEnum.AI.getValue(), loginUser.getId());
+                });
     }
 
     @Override
@@ -166,6 +181,13 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         String appPath = APP_PATH + File.separator + generateType + "_" + appId;
         File appFile = new File(appPath);
         ThrowUtil.throwIf(!appFile.exists(), ErrorCode.NOT_FOUND_ERROR, "应用不存在");
+        // 判断应用是否已部署
+        String appDeployKey = app.getDeployKey();
+        if (appDeployKey != null){
+            // 判断部署路径是否存在
+            File deployFile = new File(DEPLOY_PATH + File.separator + appDeployKey);
+            if (deployFile.exists()) return String.format("%s/%s", DEPLOY_HOST, appDeployKey);
+        }
         // 生成部署密钥 -- 6位字母数字随机数
         String deployKey = RandomUtil.randomString(6);
         // 文件复制

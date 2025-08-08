@@ -1,6 +1,10 @@
 package com.zerocode.controller;
 
+import com.zerocode.domain.entity.App;
+import com.zerocode.domain.vo.AppVO;
+import com.zerocode.service.AppService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -12,18 +16,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
 
+
+
 import java.io.File;
+
+import static com.zerocode.constant.AppConstant.APP_PATH;
 
 @RestController
 @RequestMapping("/static")
 public class StaticResourceController {
 
+    @Autowired
+    private AppService appService;
+
+
     // 应用生成根目录（用于浏览）
-    private static final String PREVIEW_ROOT_DIR = System.getProperty("user.dir") + "/tmp/code";
+    private static final String PREVIEW_ROOT_DIR = APP_PATH;
 
     /**
      * 提供静态资源访问，支持目录重定向
-     * 访问格式：http://localhost:8111/static/{deployKey}[/{fileName}]
+     * 访问格式：http://localhost:8111/static/{codePath}
      */
     @GetMapping("/{codePath}/**")
     public ResponseEntity<Resource> serveStaticResource(

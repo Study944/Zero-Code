@@ -25,6 +25,7 @@ import com.zerocode.service.ChatHistoryService;
 import com.zerocode.service.UserService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 import reactor.core.publisher.Flux;
 
 import java.io.File;
@@ -45,6 +46,8 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
     private CodeGeneratorFacade codeGeneratorFacade;
     @Resource
     private ChatHistoryService chatHistoryService;
+    @Resource
+    private TransactionTemplate transactionTemplate;
 
     @Override
     public Long addApp(AppAddDTO appAddDTO, User loginUser) {
@@ -72,9 +75,14 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         App app = this.getById(appId);
         ThrowUtil.throwIf(app == null, ErrorCode.NOT_FOUND_ERROR);
         ThrowUtil.throwIf(!app.getUserId().equals(loginUser.getId()), ErrorCode.NO_AUTH_ERROR);
-        // 删除应用
-        boolean remove = this.removeById(appId);
-        ThrowUtil.throwIf(!remove, ErrorCode.OPERATION_ERROR);
+        // 删除应用及其对话历史
+        transactionTemplate.execute(res->{
+            boolean remove = this.removeById(appId);
+            ThrowUtil.throwIf(!remove, ErrorCode.OPERATION_ERROR, "删除应用失败");
+            boolean removeChatHistory = chatHistoryService.removeChatHistory(appId);
+            ThrowUtil.throwIf(!removeChatHistory, ErrorCode.OPERATION_ERROR, "删除应用对话历史失败");
+            return true;
+        });
         return "删除成功";
     }
 
@@ -163,7 +171,7 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         StringBuilder codeBuilder = new StringBuilder();
         return stringFlux.doOnNext(string -> codeBuilder.append(string))
                 .doOnComplete(() -> {
-                    chatHistoryService.addChatMessage(appId, userPrompt,
+                    chatHistoryService.addChatMessage(appId, codeBuilder.toString(),
                             ChatHistoryMessageTypeEnum.AI.getValue(), loginUser.getId());
                 });
     }

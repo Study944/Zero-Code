@@ -1,12 +1,14 @@
 package com.zerocode.domain.entity;
 
 import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import java.io.Serial;
 
+import com.mybatisflex.core.keygen.KeyGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,10 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("chat_history")
-public class ChatHistory implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class ChatHistory  {
 
     /**
      * id

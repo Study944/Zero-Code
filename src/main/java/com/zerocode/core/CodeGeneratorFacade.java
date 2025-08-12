@@ -37,7 +37,7 @@ public class CodeGeneratorFacade {
     public File generateAndSaveCode(String userPrompt, GeneratorTypeEnum generatorTypeEnum, Long appId) {
         switch (generatorTypeEnum) {
             case HTML:
-                HtmlCodeResult htmlCodeResult = aiGeneratorService.generateHtml(userPrompt);
+                HtmlCodeResult htmlCodeResult = aiGeneratorService.generateHtml(10086L,userPrompt);
                 return CodeFileSaverExecutor.executeSaver(htmlCodeResult, generatorTypeEnum, appId);
             case MULTI_FILE:
                 MultiFileCodeResult multiFileCodeResult = aiGeneratorService.generateMultiFile(userPrompt);
@@ -58,7 +58,7 @@ public class CodeGeneratorFacade {
         switch (generatorTypeEnum) {
             case HTML:
                 // 生成响应式对象Flux
-                Flux<String> htmlStream = aiGeneratorService.generateHtmlStream(userPrompt);
+                Flux<String> htmlStream = aiGeneratorService.generateHtmlStream(appId,userPrompt);
                 // 拼接返回
                 return saveStreamCode(htmlStream, generatorTypeEnum,appId);
             case MULTI_FILE:

@@ -1,5 +1,6 @@
 package com.zerocode.core.saver;
 
+import cn.hutool.core.util.StrUtil;
 import com.zerocode.ai.GeneratorTypeEnum;
 import com.zerocode.ai.HtmlCodeResult;
 
@@ -9,6 +10,9 @@ import com.zerocode.ai.HtmlCodeResult;
 public class HtmlCodeFileSaverTemplate extends CodeFileSaverTemplate<HtmlCodeResult>{
     @Override
     protected void saveFile(String uniqueFilePath, HtmlCodeResult htmlCodeResult, GeneratorTypeEnum generatorTypeEnum) {
-        writeFile(uniqueFilePath, "index.html", htmlCodeResult.getHtmlCode());
+        String htmlCode = htmlCodeResult.getHtmlCode();
+        if (StrUtil.isNotBlank(htmlCode)) {
+            writeFile(uniqueFilePath, "index.html", htmlCode);
+        }
     }
 }

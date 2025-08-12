@@ -57,7 +57,7 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         // 设置应用信息
         App app = new App();
         // 初始化应用名称为初始提示词的前15个字
-        app.setAppName(initPrompt.substring(0, Math.min(15, initPrompt.length())));
+        app.setAppName(initPrompt.substring(0, Math.min(14, initPrompt.length())));
         app.setInitPrompt(initPrompt);
         app.setUserId(loginUser.getId());
         app.setGenerateType(appAddDTO.getGenerateType().getValue());

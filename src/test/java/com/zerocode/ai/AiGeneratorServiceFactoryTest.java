@@ -13,8 +13,11 @@ class AiGeneratorServiceFactoryTest {
 
     @Test
     void AiGenerateHTMLService() {
-        HtmlCodeResult res = aiGeneratorService.generateHtml("生成一个简单的登录页面");
+        HtmlCodeResult res = aiGeneratorService.generateHtml(1L,"你好，不要生成代码");
+        HtmlCodeResult res2 = aiGeneratorService.generateHtml(1L,"我上一句话说了什么");
         Assertions.assertNotNull(res);
+        HtmlCodeResult res3 = aiGeneratorService.generateHtml(2L,"你好，不要生成代码");
+        HtmlCodeResult res4 = aiGeneratorService.generateHtml(2L,"我上一句话说了什么");
     }
 
     @Test

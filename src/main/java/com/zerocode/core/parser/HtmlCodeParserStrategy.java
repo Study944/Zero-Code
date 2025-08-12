@@ -17,8 +17,8 @@ public class HtmlCodeParserStrategy implements CodeParserStrategy<HtmlCodeResult
         if (htmlCode != null && !htmlCode.trim().isEmpty()) {
             result.setHtmlCode(htmlCode.trim());
         } else {
-            // 如果没有找到代码块，将整个内容作为HTML
-            result.setHtmlCode(codeContent.trim());
+            // 如果没有找到代码块，置为空
+            result.setHtmlCode(null);
         }
         return result;
     }

@@ -8,6 +8,12 @@ spring:
     url: jdbc:mysql://localhost:3306/zero_code
     username: root
     password: 123456
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      ttl: 3600
+      password: 123456
 mybatis-flex:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 开启日志

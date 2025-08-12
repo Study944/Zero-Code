@@ -24,7 +24,8 @@ import javax.crypto.KeyGenerator;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("user")
-public class User{
+public class User implements Serializable{
+
 
     /**
      * id

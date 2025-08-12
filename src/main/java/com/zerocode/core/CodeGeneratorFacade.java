@@ -1,9 +1,6 @@
 package com.zerocode.core;
 
-import com.zerocode.ai.AiGeneratorService;
-import com.zerocode.ai.GeneratorTypeEnum;
-import com.zerocode.ai.HtmlCodeResult;
-import com.zerocode.ai.MultiFileCodeResult;
+import com.zerocode.ai.*;
 import com.zerocode.core.parser.CodeParser;
 import com.zerocode.core.parser.CodeParserExecutor;
 import com.zerocode.core.saver.CodeFileSaver;
@@ -25,7 +22,7 @@ import java.io.File;
 public class CodeGeneratorFacade {
 
     @Resource
-    private AiGeneratorService aiGeneratorService;
+    private AiGeneratorServiceFactory aiGeneratorServiceFactory;
 
     /**
      * 生成代码并保存
@@ -35,9 +32,11 @@ public class CodeGeneratorFacade {
      * @return 文件
      */
     public File generateAndSaveCode(String userPrompt, GeneratorTypeEnum generatorTypeEnum, Long appId) {
+        // 获取有记忆和缓存的AI服务
+        AiGeneratorService aiGeneratorService = aiGeneratorServiceFactory.getAiGeneratorService(appId);
         switch (generatorTypeEnum) {
             case HTML:
-                HtmlCodeResult htmlCodeResult = aiGeneratorService.generateHtml(10086L,userPrompt);
+                HtmlCodeResult htmlCodeResult = aiGeneratorService.generateHtml(userPrompt);
                 return CodeFileSaverExecutor.executeSaver(htmlCodeResult, generatorTypeEnum, appId);
             case MULTI_FILE:
                 MultiFileCodeResult multiFileCodeResult = aiGeneratorService.generateMultiFile(userPrompt);
@@ -55,10 +54,12 @@ public class CodeGeneratorFacade {
      * @return Flux<String>响应式对象
      */
     public Flux<String> generateAndSaveStreamCode(String userPrompt, GeneratorTypeEnum generatorTypeEnum, Long appId) {
+        // 获取有记忆和缓存的AI服务
+        AiGeneratorService aiGeneratorService = aiGeneratorServiceFactory.getAiGeneratorService(appId);
         switch (generatorTypeEnum) {
             case HTML:
                 // 生成响应式对象Flux
-                Flux<String> htmlStream = aiGeneratorService.generateHtmlStream(appId,userPrompt);
+                Flux<String> htmlStream = aiGeneratorService.generateHtmlStream(userPrompt);
                 // 拼接返回
                 return saveStreamCode(htmlStream, generatorTypeEnum,appId);
             case MULTI_FILE:

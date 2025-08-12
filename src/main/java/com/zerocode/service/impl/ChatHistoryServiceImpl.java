@@ -14,17 +14,23 @@ import com.zerocode.exception.ErrorCode;
 import com.zerocode.mapper.ChatHistoryMapper;
 import com.zerocode.service.AppService;
 import com.zerocode.service.ChatHistoryService;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 对话历史服务层实现
  */
+@Slf4j
 @Service
-public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatHistory>  implements ChatHistoryService{
+public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatHistory> implements ChatHistoryService {
 
     @Resource
     @Lazy
@@ -69,11 +75,37 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
         // 查询条件
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .eq(ChatHistory::getAppId, appId);
-        queryWrapper.lt(ChatHistory::getCreateTime, lastCreateTime,lastCreateTime!=null);
-        queryWrapper.orderBy(ChatHistory::getCreateTime,false);
+        queryWrapper.lt(ChatHistory::getCreateTime, lastCreateTime, lastCreateTime != null);
+        queryWrapper.orderBy(ChatHistory::getCreateTime, false);
         // 分页查询
         return this.page(Page.of(1, pageSize), queryWrapper);
     }
 
+    @Override
+    public void loadChatHistory(Long appId, MessageWindowChatMemory messageWindowChatMemory) {
+        try {
+            // 查询对话历史表
+            QueryWrapper queryWrapper = QueryWrapper.create()
+                    .eq(ChatHistory::getAppId, appId)
+                    .limit(1,20)
+                    .orderBy(ChatHistory::getCreateTime, true);
+            List<ChatHistory> chatHistoryList = this.list(queryWrapper);
+            if (chatHistoryList == null) return;
+            // 清空
+            messageWindowChatMemory.clear();
+            // 添加
+            chatHistoryList.stream()
+                    .forEach(chatHistory -> {
+                        if (ChatHistoryMessageTypeEnum.USER.getValue().equals(chatHistory.getMessageType())) {
+                            messageWindowChatMemory.add(new UserMessage(chatHistory.getMessage()));
+                        } else {
+                            messageWindowChatMemory.add(new AiMessage(chatHistory.getMessage()));
+                        }
+                    });
+            log.info("加载成功{}条消息", chatHistoryList.size());
+        } catch (Exception e) {
+            log.error("加载失败: {}", e.getMessage());
+        }
+    }
 
 }

@@ -13,7 +13,7 @@ public interface AiGeneratorService {
      * @return  HTML
      */
     @SystemMessage(fromResource = "prompt/code-html-system-prompt.txt")
-    HtmlCodeResult generateHtml(@MemoryId Long messageId, @UserMessage String userPrompt);
+    HtmlCodeResult generateHtml(String userPrompt);
 
     /**
      * 生成多文件格式
@@ -29,7 +29,7 @@ public interface AiGeneratorService {
      * @return Flux<String>
      */
     @SystemMessage(fromResource = "prompt/code-html-system-prompt.txt")
-    Flux<String> generateHtmlStream(@MemoryId Long messageId,@UserMessage String userPrompt);
+    Flux<String> generateHtmlStream(String userPrompt);
 
     /**
      * 流式生成多文件格式

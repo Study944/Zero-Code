@@ -66,17 +66,24 @@
             <version>4.4.0</version>
         </dependency>
         <!-- Langchain4j-ollama -->
-        <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-ollama-spring-boot-starter</artifactId>
-            <version>1.0.0-beta3</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>dev.langchain4j</groupId>-->
+<!--            <artifactId>langchain4j-ollama-spring-boot-starter</artifactId>-->
+<!--            <version>1.3.0-beta9</version>-->
+<!--        </dependency>-->
+
         <!-- AiService依赖 -->
         <dependency>
             <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-spring-boot-starter</artifactId>
-            <version>1.0.0-beta3</version>
+            <artifactId>langchain4j</artifactId>
+            <version>1.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
+            <version>1.1.0-beta7</version>
+        </dependency>
+
         <!--LangChain4j-Redis-->
         <dependency>
             <groupId>dev.langchain4j</groupId>
@@ -87,7 +94,7 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-reactor</artifactId>
-            <version>1.0.0-beta3</version>
+            <version>1.1.0-beta7</version>
         </dependency>
         <!-- Mybatis-Flex -->
         <dependency>

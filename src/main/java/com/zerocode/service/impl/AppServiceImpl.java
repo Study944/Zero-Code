@@ -6,12 +6,11 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
-import com.zerocode.ai.GeneratorTypeEnum;
-import com.zerocode.common.ResultUtil;
+import com.zerocode.ai.entity.GeneratorTypeEnum;
 import com.zerocode.common.ThrowUtil;
 import com.zerocode.core.CodeGeneratorFacade;
-import com.zerocode.core.parser.CodeParserExecutor;
-import com.zerocode.core.saver.CodeFileSaverExecutor;
+import com.zerocode.core.builder.VueProjectBuilder;
+import com.zerocode.core.handler.StreamHandlerExecutor;
 import com.zerocode.domain.dto.*;
 import com.zerocode.domain.entity.App;
 import com.zerocode.domain.entity.User;
@@ -48,6 +47,10 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
     private ChatHistoryService chatHistoryService;
     @Resource
     private TransactionTemplate transactionTemplate;
+    @Resource
+    private StreamHandlerExecutor streamHandlerExecutor;
+    @Resource
+    private VueProjectBuilder vueProjectBuilder;
 
     @Override
     public Long addApp(AppAddDTO appAddDTO, User loginUser) {
@@ -167,13 +170,8 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         // AI生成应用
         Flux<String> stringFlux = codeGeneratorFacade.generateAndSaveStreamCode(userPrompt, generatorTypeEnum, appId);
         // 保存对话历史--AI生成代码
-        // 拼接为一个字符串
-        StringBuilder codeBuilder = new StringBuilder();
-        return stringFlux.doOnNext(string -> codeBuilder.append(string))
-                .doOnComplete(() -> {
-                    chatHistoryService.addChatMessage(appId, codeBuilder.toString(),
-                            ChatHistoryMessageTypeEnum.AI.getValue(), loginUser.getId());
-                });
+        Flux<String> doneExecute = streamHandlerExecutor.doExecute(stringFlux, chatHistoryService, appId, loginUser, generatorTypeEnum);
+        return doneExecute;
     }
 
     @Override
@@ -199,6 +197,17 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         // 生成部署密钥 -- 6位字母数字随机数
         String deployKey = RandomUtil.randomString(6);
         // 文件复制
+        GeneratorTypeEnum generatorType = GeneratorTypeEnum.getByValue(app.getGenerateType());
+        if (generatorType == GeneratorTypeEnum.VUE_PROJECT) {
+            // Vue 项目需要构建
+            boolean buildSuccess = vueProjectBuilder.buildProject(appPath);
+            ThrowUtil.throwIf(!buildSuccess, ErrorCode.SYSTEM_ERROR, "Vue 项目构建失败，请重试");
+            // 检查 dist 目录是否存在
+            File distDir = new File(appPath, "dist");
+            ThrowUtil.throwIf(!distDir.exists(), ErrorCode.SYSTEM_ERROR, "Vue 项目构建完成但未生成 dist 目录");
+            // 构建完成后，需要将构建后的文件复制到部署目录
+            appFile = distDir;
+        }
         FileUtil.copyContent(appFile, new File(DEPLOY_PATH + File.separator + deployKey), true);
         // 更新应用部署字段
         App newApp = new App();

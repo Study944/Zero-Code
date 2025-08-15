@@ -1,6 +1,6 @@
 package com.zerocode.core.parser;
 
-import com.zerocode.ai.HtmlCodeResult;
+import com.zerocode.ai.entity.HtmlCodeResult;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

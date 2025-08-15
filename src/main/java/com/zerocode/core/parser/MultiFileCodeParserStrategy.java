@@ -1,6 +1,6 @@
 package com.zerocode.core.parser;
 
-import com.zerocode.ai.MultiFileCodeResult;
+import com.zerocode.ai.entity.MultiFileCodeResult;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

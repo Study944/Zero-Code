@@ -1,4 +1,4 @@
-package com.zerocode.ai;
+package com.zerocode.ai.entity;
 
 import lombok.Getter;
 
@@ -8,7 +8,9 @@ import lombok.Getter;
 @Getter
 public enum GeneratorTypeEnum {
     HTML("原生HTML模式", "html"),
-    MULTI_FILE("原生多文件模式", "multi-file");
+    MULTI_FILE("原生多文件模式", "multi-file"),
+    VUE_PROJECT("Vue项目模式", "vue-project"),
+    REACT_PROJECT("React项目模式", "react-project"),
     ;
 
     private final String text;

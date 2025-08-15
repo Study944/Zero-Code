@@ -1,7 +1,7 @@
 package com.zerocode.core.saver;
 
 import cn.hutool.core.io.FileUtil;
-import com.zerocode.ai.GeneratorTypeEnum;
+import com.zerocode.ai.entity.GeneratorTypeEnum;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;

@@ -1,8 +1,8 @@
 package com.zerocode.core.saver;
 
 import cn.hutool.core.util.StrUtil;
-import com.zerocode.ai.GeneratorTypeEnum;
-import com.zerocode.ai.HtmlCodeResult;
+import com.zerocode.ai.entity.GeneratorTypeEnum;
+import com.zerocode.ai.entity.HtmlCodeResult;
 
 /**
  * html代码保存模板

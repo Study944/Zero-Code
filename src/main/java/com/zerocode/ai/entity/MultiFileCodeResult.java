@@ -1,4 +1,4 @@
-package com.zerocode.ai;
+package com.zerocode.ai.entity;
 
 import lombok.Data;
 

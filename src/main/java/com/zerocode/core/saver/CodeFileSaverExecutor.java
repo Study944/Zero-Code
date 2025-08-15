@@ -1,8 +1,8 @@
 package com.zerocode.core.saver;
 
-import com.zerocode.ai.GeneratorTypeEnum;
-import com.zerocode.ai.HtmlCodeResult;
-import com.zerocode.ai.MultiFileCodeResult;
+import com.zerocode.ai.entity.GeneratorTypeEnum;
+import com.zerocode.ai.entity.HtmlCodeResult;
+import com.zerocode.ai.entity.MultiFileCodeResult;
 import com.zerocode.exception.BusinessException;
 import com.zerocode.exception.ErrorCode;
 

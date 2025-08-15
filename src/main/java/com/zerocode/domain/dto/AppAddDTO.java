@@ -1,6 +1,6 @@
 package com.zerocode.domain.dto;
 
-import com.zerocode.ai.GeneratorTypeEnum;
+import com.zerocode.ai.entity.GeneratorTypeEnum;
 import lombok.Data;
 
 @Data

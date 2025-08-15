@@ -1,8 +1,7 @@
 package com.zerocode.core.saver;
 
-import cn.hutool.core.util.StrUtil;
-import com.zerocode.ai.GeneratorTypeEnum;
-import com.zerocode.ai.MultiFileCodeResult;
+import com.zerocode.ai.entity.GeneratorTypeEnum;
+import com.zerocode.ai.entity.MultiFileCodeResult;
 
 /**
  * 多文件代码保存模板

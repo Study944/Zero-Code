@@ -1,5 +1,8 @@
 package com.zerocode.ai;
 
+import com.zerocode.ai.aiservices.AiGeneratorService;
+import com.zerocode.ai.entity.HtmlCodeResult;
+import com.zerocode.ai.entity.MultiFileCodeResult;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,11 +16,11 @@ class AiGeneratorServiceFactoryTest {
 
     @Test
     void AiGenerateHTMLService() {
-        HtmlCodeResult res = aiGeneratorService.generateHtml(1L,"你好，不要生成代码");
-        HtmlCodeResult res2 = aiGeneratorService.generateHtml(1L,"我上一句话说了什么");
+        HtmlCodeResult res = aiGeneratorService.generateHtml("你好，不要生成代码");
+        HtmlCodeResult res2 = aiGeneratorService.generateHtml("我上一句话说了什么");
         Assertions.assertNotNull(res);
-        HtmlCodeResult res3 = aiGeneratorService.generateHtml(2L,"你好，不要生成代码");
-        HtmlCodeResult res4 = aiGeneratorService.generateHtml(2L,"我上一句话说了什么");
+        HtmlCodeResult res3 = aiGeneratorService.generateHtml("你好，不要生成代码");
+        HtmlCodeResult res4 = aiGeneratorService.generateHtml("我上一句话说了什么");
     }
 
     @Test

@@ -1,8 +1,8 @@
-package com.zerocode.ai;
+package com.zerocode.ai.aiservices;
 
-import dev.langchain4j.service.MemoryId;
-import dev.langchain4j.service.SystemMessage;
-import dev.langchain4j.service.UserMessage;
+import com.zerocode.ai.entity.HtmlCodeResult;
+import com.zerocode.ai.entity.MultiFileCodeResult;
+import dev.langchain4j.service.*;
 import reactor.core.publisher.Flux;
 
 public interface AiGeneratorService {
@@ -38,5 +38,23 @@ public interface AiGeneratorService {
      */
     @SystemMessage(fromResource = "prompt/code-multi-file-system-prompt.txt")
     Flux<String> generateMultiFileStream(String userPrompt);
+
+    /**
+     * 生成Vue项目
+     * @param appId
+     * @param userPrompt
+     * @return
+     */
+    @SystemMessage(fromResource = "prompt/code-vue-project-system-prompt.txt")
+    TokenStream generateVueProjectStream(@MemoryId Long appId, @UserMessage String userPrompt);
+
+    /**
+     * 生成React 项目
+     * @param appId
+     * @param userPrompt
+     * @return
+     */
+    @SystemMessage(fromResource = "prompt/code-react-project-system-prompt.txt")
+    TokenStream generateReactProjectStream(@MemoryId Long appId,@UserMessage String userPrompt);
 
 }

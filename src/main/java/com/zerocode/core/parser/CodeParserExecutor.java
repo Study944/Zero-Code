@@ -1,6 +1,6 @@
 package com.zerocode.core.parser;
 
-import com.zerocode.ai.GeneratorTypeEnum;
+import com.zerocode.ai.entity.GeneratorTypeEnum;
 import com.zerocode.exception.BusinessException;
 import com.zerocode.exception.ErrorCode;
 

@@ -2,9 +2,9 @@ package com.zerocode.core.saver;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
-import com.zerocode.ai.GeneratorTypeEnum;
-import com.zerocode.ai.HtmlCodeResult;
-import com.zerocode.ai.MultiFileCodeResult;
+import com.zerocode.ai.entity.GeneratorTypeEnum;
+import com.zerocode.ai.entity.HtmlCodeResult;
+import com.zerocode.ai.entity.MultiFileCodeResult;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;

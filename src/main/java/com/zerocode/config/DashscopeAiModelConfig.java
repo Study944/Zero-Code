@@ -41,6 +41,8 @@ public class DashscopeAiModelConfig {
                 .maxTokens(4096)
                 .logRequests(true)
                 .logResponses(true)
+                .strictJsonSchema(true)
+                .responseFormat("json_object")
                 .build();
     }
 }

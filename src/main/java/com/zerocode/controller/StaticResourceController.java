@@ -51,17 +51,30 @@ public class StaticResourceController {
                 headers.add("Location", request.getRequestURI() + "/");
                 return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
             }
+            // 判断是否是工程化项目
+            boolean contains = codePath.contains("project");
+            if (contains && resourcePath.equals("/")) {
+                resourcePath = "/dist/index.html";
+            }
             // 默认返回 index.html
-            if (resourcePath.equals("/")) {
+            else if (resourcePath.equals("/")) {
                 resourcePath = "/index.html";
             }
-            // 构建文件路径
-            String filePath = PREVIEW_ROOT_DIR + "/" + codePath + resourcePath;
+            // 增加对 /assets/ 的特殊处理
+            String filePath;
+            if (resourcePath.startsWith("/assets/")) {
+                // 对于 /assets/ 路径，加上 /dist
+                filePath = PREVIEW_ROOT_DIR + "/" + codePath + "/dist" + resourcePath;
+            } else {
+                // 对于其他路径（例如 index.html），保持原样
+                filePath = PREVIEW_ROOT_DIR + "/" + codePath + resourcePath;
+            }
             File file = new File(filePath);
             // 检查文件是否存在
             if (!file.exists()) {
                 return ResponseEntity.notFound().build();
             }
+
             // 返回文件资源
             Resource resource = new FileSystemResource(file);
             return ResponseEntity.ok()

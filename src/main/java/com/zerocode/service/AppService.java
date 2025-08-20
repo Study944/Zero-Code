@@ -6,6 +6,7 @@ import com.zerocode.domain.dto.*;
 import com.zerocode.domain.entity.App;
 import com.zerocode.domain.entity.User;
 import com.zerocode.domain.vo.AppVO;
+import jakarta.servlet.http.HttpServletResponse;
 import reactor.core.publisher.Flux;
 
 /**
@@ -28,4 +29,6 @@ public interface AppService extends IService<App> {
     Flux<String> generateCode(AppGenerateCodeDTO appGenerateCodeDTO, User loginUser);
 
     String deployMyApp(AppDeployDTO appDeployDTO, User loginUser);
+
+    Boolean downloadProject(Long appId, User loginUser, HttpServletResponse response);
 }

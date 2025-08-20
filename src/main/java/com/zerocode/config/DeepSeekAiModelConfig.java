@@ -1,6 +1,5 @@
 package com.zerocode.config;
 
-
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import lombok.Data;
@@ -9,20 +8,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "langchain4j.community.dashscope")
+@ConfigurationProperties(prefix = "langchain4j.community.deepseek")
 @Data
-public class DashscopeAiModelConfig {
+public class DeepSeekAiModelConfig {
 
     private String apiKey;
 
-    private String modelName = "deepseek-r1-0528";
-
     @Bean
-    public OpenAiStreamingChatModel dashscopeStreamingChatModel() {
+    public OpenAiStreamingChatModel deepSeekStreamingChatModel() {
 
         return OpenAiStreamingChatModel.builder()
-                .baseUrl("https://dashscope.aliyuncs.com/compatible-mode/v1")
-                .modelName(modelName)
+                .baseUrl("https://api.deepseek.com")
+                .modelName("deepseek-reasoner")
                 .apiKey(apiKey)
                 .timeout(java.time.Duration.ofMinutes(5))
                 .maxTokens(8192)
@@ -34,10 +31,10 @@ public class DashscopeAiModelConfig {
     }
 
     @Bean
-    public OpenAiChatModel dashscopeChatModel() {
+    public OpenAiChatModel deepSeekChatModel() {
         return OpenAiChatModel.builder()
-                .baseUrl("https://dashscope.aliyuncs.com/compatible-mode/v1")
-                .modelName(modelName) // 模型名称
+                .baseUrl("https://api.deepseek.com")
+                .modelName("deepseek-reasoner") // 模型名称
                 .apiKey(apiKey)
                 .timeout(java.time.Duration.ofMinutes(5))
                 .maxTokens(8192)
@@ -47,4 +44,5 @@ public class DashscopeAiModelConfig {
                 .responseFormat("json_object")
                 .build();
     }
+
 }

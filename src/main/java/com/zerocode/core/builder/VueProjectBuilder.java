@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * 构建 Vue 项目
@@ -13,6 +14,26 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 public class VueProjectBuilder {
+
+
+    /**
+     * 异步构建 Vue 项目（带构建完成回调）
+     *
+     * @param projectPath 项目路径
+     * @param onComplete  构建完成回调（无论成功或失败都会调用）
+     */
+    public void buildProjectAsync(String projectPath, Consumer<Boolean> onComplete) {
+        Thread.ofVirtual().name("vue-builder-" + System.currentTimeMillis())
+                .start(() -> {
+                    try {
+                        boolean success = buildProject(projectPath);
+                        onComplete.accept(success);
+                    } catch (Exception e) {
+                        log.error("异步构建 Vue 项目时发生异常: {}", e.getMessage(), e);
+                        onComplete.accept(false);
+                    }
+                });
+    }
 
     /**
      * 异步构建 Vue 项目

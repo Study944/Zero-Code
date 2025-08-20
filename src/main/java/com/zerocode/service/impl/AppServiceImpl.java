@@ -8,6 +8,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.zerocode.ai.entity.GeneratorTypeEnum;
 import com.zerocode.common.ThrowUtil;
+import com.zerocode.constant.UserConstant;
 import com.zerocode.core.CodeGeneratorFacade;
 import com.zerocode.core.builder.VueProjectBuilder;
 import com.zerocode.core.handler.StreamHandlerExecutor;
@@ -21,8 +22,10 @@ import com.zerocode.exception.ErrorCode;
 import com.zerocode.mapper.AppMapper;
 import com.zerocode.service.AppService;
 import com.zerocode.service.ChatHistoryService;
+import com.zerocode.service.ProjectDownloadService;
 import com.zerocode.service.UserService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import reactor.core.publisher.Flux;
@@ -51,6 +54,8 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
     private StreamHandlerExecutor streamHandlerExecutor;
     @Resource
     private VueProjectBuilder vueProjectBuilder;
+    @Resource
+    private ProjectDownloadService projectDownloadService;
 
     @Override
     public Long addApp(AppAddDTO appAddDTO, User loginUser) {
@@ -218,6 +223,20 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         ThrowUtil.throwIf(!update, ErrorCode.OPERATION_ERROR, "更新应用部署字段失败");
         // 返回部署路径
         return String.format("%s/%s", DEPLOY_HOST, deployKey);
+    }
+
+    @Override
+    public Boolean downloadProject(Long appId, User loginUser, HttpServletResponse response) {
+        // 参数校验
+        App app = this.getById(appId);
+        ThrowUtil.throwIf(app == null, ErrorCode.NOT_FOUND_ERROR, "应用不存在");
+        ThrowUtil.throwIf(!app.getUserId().equals(loginUser.getId()) &&
+                !UserConstant.ADMIN_ROLE.equals(loginUser.getUserRole()), ErrorCode.NO_AUTH_ERROR);
+        // 寻找应用根路径
+        String appPath = APP_PATH + File.separator + app.getGenerateType() + "_" + appId;
+        String projectName = app.getId().toString();
+        projectDownloadService.downloadProject(appPath, projectName, response);
+        return true;
     }
 
 }

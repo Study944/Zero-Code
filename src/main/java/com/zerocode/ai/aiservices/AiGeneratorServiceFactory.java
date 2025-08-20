@@ -29,13 +29,20 @@ public class AiGeneratorServiceFactory {
     private StreamingChatModel dashscopeStreamingChatModel;
 
     @Resource
+    private ChatModel dashscopeChatModel;
+
+    @Resource
+    private StreamingChatModel deepSeekStreamingChatModel;
+
+    @Resource
+    private ChatModel deepSeekChatModel;
+
+    @Resource
     private RedisChatMemoryStore redisChatMemoryStore;
 
     @Resource
     private ChatHistoryService chatHistoryService;
 
-    @Resource
-    private ChatModel dashscopeChatModel;
 
     // Caffeine缓存AIService
     private final Cache<Long, AiGeneratorService> aiServicesCache = Caffeine.newBuilder()

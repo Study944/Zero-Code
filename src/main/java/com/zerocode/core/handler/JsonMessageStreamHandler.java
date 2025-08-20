@@ -6,15 +6,25 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 import com.zerocode.ai.message.*;
+import com.zerocode.common.ThrowUtil;
 import com.zerocode.core.builder.VueProjectBuilder;
+import com.zerocode.domain.dto.AppUpdateDTO;
+import com.zerocode.domain.entity.App;
 import com.zerocode.domain.entity.User;
 import com.zerocode.domain.enums.ChatHistoryMessageTypeEnum;
+import com.zerocode.exception.ErrorCode;
+import com.zerocode.service.AppService;
 import com.zerocode.service.ChatHistoryService;
+import com.zerocode.service.ScreenshotService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,6 +40,10 @@ public class JsonMessageStreamHandler {
 
     @Resource
     private VueProjectBuilder vueProjectBuilder;
+    @Resource
+    private ScreenshotService screenshotService;
+    @Resource
+    private AppService appService;
 
     /**
      * 处理 TokenStream（VUE_PROJECT）
@@ -58,14 +72,50 @@ public class JsonMessageStreamHandler {
                     // 流式响应完成后，添加 AI 消息到对话历史
                     String aiResponse = chatHistoryStringBuilder.toString();
                     chatHistoryService.addChatMessage(appId, aiResponse, ChatHistoryMessageTypeEnum.AI.getValue(), loginUser.getId());
+                    // 异步生成前端VUE项目
                     String vueProjectPath = APP_PATH+"/vue_project_"+appId;
-                    vueProjectBuilder.buildProjectAsync(vueProjectPath);
+                    vueProjectBuilder.buildProjectAsync(vueProjectPath,success->{
+                        if (success) {
+                            // 项目构建成功，进行截图
+                            takeScreenshotOfProject(appId, vueProjectPath);
+                        } else {
+                            log.error("Vue项目构建失败，无法进行截图，项目路径: {}", vueProjectPath);
+                        }
+                    });
                 })
                 .doOnError(error -> {
                     // 如果AI回复失败，也要记录错误消息
                     String errorMessage = "AI回复失败: " + error.getMessage();
                     chatHistoryService.addChatMessage(appId, errorMessage, ChatHistoryMessageTypeEnum.AI.getValue(), loginUser.getId());
                 });
+    }
+
+    /**
+     * 对生成的项目进行截图
+     *
+     * @param appId 项目ID
+     * @param projectPath 项目路径
+     */
+    private void takeScreenshotOfProject(long appId, String projectPath) {
+        Thread.startVirtualThread(() -> {
+            try {
+                // 构建项目访问URL
+                String path = projectPath + "/dist/index.html";
+                File indexFile = new File(path);
+                ThrowUtil.throwIf(indexFile == null || !indexFile.exists(), ErrorCode.SYSTEM_ERROR,"项目目录中没有 index.html 文件：" + projectPath);
+                String projectUrl = "http://localhost:8111/static/"+"vue_project_"+appId+File.separator;
+                // 调用截图服务
+                String screenshotUrl = screenshotService.takeScreenshot(projectUrl);
+                // 更新应用封面
+                App newApp = new App();
+                newApp.setId(appId);
+                newApp.setAppIcon(screenshotUrl);
+                boolean update = appService.updateById(newApp);
+                ThrowUtil.throwIf(!update, ErrorCode.OPERATION_ERROR, "更新应用封面失败");
+            } catch (Exception e) {
+                log.error("截图过程中发生错误", e);
+            }
+        });
     }
 
     /**

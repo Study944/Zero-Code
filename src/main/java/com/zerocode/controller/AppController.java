@@ -15,6 +15,7 @@ import com.zerocode.exception.ErrorCode;
 import com.zerocode.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
@@ -218,5 +219,20 @@ public class AppController {
         ThrowUtil.throwIf(appDeployDTO == null, ErrorCode.PARAMS_ERROR);
         User loginUser = userService.getLoginUser(request);
         return ResultUtil.success(appService.deployMyApp(appDeployDTO, loginUser));
+    }
+
+    /**
+     * 下载项目
+     * @param appId 项目ID
+     * @param request
+     * @param response
+     * @return
+     */
+    @GetMapping("/download/{appId}")
+    public void downloadProject(@PathVariable Long appId, HttpServletRequest request, HttpServletResponse response) {
+        // 参数校验
+        ThrowUtil.throwIf(appId == null, ErrorCode.PARAMS_ERROR);
+        User loginUser = userService.getLoginUser(request);
+        appService.downloadProject(appId, loginUser, response);
     }
 }

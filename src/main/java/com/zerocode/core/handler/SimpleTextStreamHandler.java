@@ -1,10 +1,17 @@
 package com.zerocode.core.handler;
 
+import com.zerocode.common.ThrowUtil;
+import com.zerocode.domain.entity.App;
 import com.zerocode.domain.entity.User;
 import com.zerocode.domain.enums.ChatHistoryMessageTypeEnum;
+import com.zerocode.exception.ErrorCode;
 import com.zerocode.service.ChatHistoryService;
+import com.zerocode.service.ScreenshotService;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
+
+import java.io.File;
 
 /**
  * 简单文本流处理器
@@ -12,6 +19,9 @@ import reactor.core.publisher.Flux;
  */
 @Slf4j
 public class SimpleTextStreamHandler {
+
+    @Resource
+    private ScreenshotService screenshotService;
 
     /**
      * 处理传统流（HTML, MULTI_FILE）
@@ -43,5 +53,7 @@ public class SimpleTextStreamHandler {
                     String errorMessage = "AI回复失败: " + error.getMessage();
                     chatHistoryService.addChatMessage(appId, errorMessage, ChatHistoryMessageTypeEnum.AI.getValue(), loginUser.getId());
                 });
+
     }
+
 }

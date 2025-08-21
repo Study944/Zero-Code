@@ -6,6 +6,8 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 import com.zerocode.ai.message.*;
+import com.zerocode.ai.tool.BaseTool;
+import com.zerocode.ai.tool.ToolManager;
 import com.zerocode.common.ThrowUtil;
 import com.zerocode.core.builder.VueProjectBuilder;
 import com.zerocode.domain.dto.AppUpdateDTO;
@@ -40,10 +42,15 @@ public class JsonMessageStreamHandler {
 
     @Resource
     private VueProjectBuilder vueProjectBuilder;
+
     @Resource
     private ScreenshotService screenshotService;
+
     @Resource
     private AppService appService;
+
+    @Resource
+    private ToolManager toolManager;
 
     /**
      * 处理 TokenStream（VUE_PROJECT）
@@ -140,7 +147,7 @@ public class JsonMessageStreamHandler {
                 if (toolId != null && !seenToolIds.contains(toolId)) {
                     // 第一次调用这个工具，记录 ID 并完整返回工具信息
                     seenToolIds.add(toolId);
-                    return "\n\n[选择工具] 写入文件\n\n";
+                    return String.format("\n\n[选择工具] %s \n\n", toolRequestMessage.getName());
                 } else {
                     // 不是第一次调用这个工具，直接返回空
                     return "";
@@ -149,17 +156,10 @@ public class JsonMessageStreamHandler {
             case TOOL_EXECUTED -> {
                 ToolExecutedMessage toolExecutedMessage = JSONUtil.toBean(chunk, ToolExecutedMessage.class);
                 JSONObject jsonObject = JSONUtil.parseObj(toolExecutedMessage.getArguments());
-                String relativeFilePath = jsonObject.getStr("relativeFilePath");
-                String suffix = FileUtil.getSuffix(relativeFilePath);
-                String content = jsonObject.getStr("content");
-                String result = String.format("""
-                        [工具调用] 写入文件 %s
-                        ```%s
-                        %s
-                        ```
-                        """, relativeFilePath, suffix, content);
+                BaseTool tool = toolManager.getTool(toolExecutedMessage.getName());
+                String res = tool.toolResponse(jsonObject);
                 // 输出前端和要持久化的内容
-                String output = String.format("\n\n%s\n\n", result);
+                String output = String.format("\n\n%s\n\n", res);
                 chatHistoryStringBuilder.append(output);
                 return output;
             }

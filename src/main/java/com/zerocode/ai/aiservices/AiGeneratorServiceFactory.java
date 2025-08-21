@@ -2,7 +2,7 @@ package com.zerocode.ai.aiservices;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.zerocode.ai.tool.FileWriteTool;
+import com.zerocode.ai.tool.*;
 import com.zerocode.ai.entity.GeneratorTypeEnum;
 import com.zerocode.exception.BusinessException;
 import com.zerocode.exception.ErrorCode;
@@ -43,6 +43,9 @@ public class AiGeneratorServiceFactory {
     @Resource
     private ChatHistoryService chatHistoryService;
 
+    @Resource
+    private ToolManager toolManager;
+
 
     // Caffeine缓存AIService
     private final Cache<Long, AiGeneratorService> aiServicesCache = Caffeine.newBuilder()
@@ -81,7 +84,7 @@ public class AiGeneratorServiceFactory {
                         .streamingChatModel(dashscopeStreamingChatModel)
                         .chatModel(dashscopeChatModel)
                         // 添加工具
-                        .tools(new FileWriteTool())
+                        .tools(toolManager.getAllTools())
                         // 处理AI调用不存在工具
                         .hallucinatedToolNameStrategy(toolExecutionRequest ->
                                 ToolExecutionResultMessage.from(toolExecutionRequest,

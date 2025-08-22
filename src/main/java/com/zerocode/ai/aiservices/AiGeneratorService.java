@@ -1,5 +1,6 @@
 package com.zerocode.ai.aiservices;
 
+import com.zerocode.ai.entity.GeneratorTypeEnum;
 import com.zerocode.ai.entity.HtmlCodeResult;
 import com.zerocode.ai.entity.MultiFileCodeResult;
 import dev.langchain4j.service.*;
@@ -56,5 +57,13 @@ public interface AiGeneratorService {
      */
     @SystemMessage(fromResource = "prompt/code-react-project-system-prompt.txt")
     TokenStream generateReactProjectStream(@MemoryId Long appId,@UserMessage String userPrompt);
+
+    /**
+     * 智能项目生成类型路由
+     * @param userPrompt
+     * @return
+     */
+    @SystemMessage(fromResource = "prompt/code-routing-system-prompt.txt")
+    GeneratorTypeEnum generateRouting(String userPrompt);
 
 }

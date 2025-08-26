@@ -1,4 +1,4 @@
-package com.zerocode.ai.aiservices;
+package com.zerocode.langGraph4j.service;
 
 import com.zerocode.ai.entity.GeneratorTypeEnum;
 import dev.langchain4j.service.SystemMessage;
@@ -12,5 +12,7 @@ public interface AiGeneratorRoutingService {
      */
     @SystemMessage(fromResource = "prompt/code-routing-system-prompt.txt")
     GeneratorTypeEnum generateRouting(String userPrompt);
+
+
 
 }

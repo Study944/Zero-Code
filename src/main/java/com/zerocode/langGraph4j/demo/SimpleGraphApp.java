@@ -1,4 +1,4 @@
-package com.zerocode.langGraph4j;
+package com.zerocode.langGraph4j.demo;
 
 import org.bsc.langgraph4j.GraphRepresentation;
 import org.bsc.langgraph4j.StateGraph;
@@ -20,7 +20,7 @@ public class SimpleGraphApp {
         ResponderNode responderNode = new ResponderNode();
 
         // 2.定义图形结构 StateGraph
-       var stateGraph = new StateGraph<>(SimpleState.SCHEMA, initData -> new SimpleState(initData))
+       var stateGraph = new StateGraph<>(ImageState.SCHEMA, initData -> new ImageState(initData))
              // 添加节点到图形
             .addNode("greeter", node_async(greeterNode))
             .addNode("responder", node_async(responderNode))
@@ -37,7 +37,7 @@ public class SimpleGraphApp {
         System.out.println(stateGraphGraph.content());
 
         // 5.运行图表
-        for (var item : compiledGraph.stream( Map.of( SimpleState.MESSAGES_KEY, "让我们开始吧！" ) ) ) {
+        for (var item : compiledGraph.stream( Map.of( ImageState.MESSAGES_KEY, "让我们开始吧！" ) ) ) {
             System.out.println( item );
         }
 

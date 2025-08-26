@@ -40,6 +40,18 @@ public class CosManager {
         return null;
     }
 
+    public String uploadMermaidDiagram(File file, String key) {
+        // 1.甚至上传路径key
+        PutObjectResult putObjectResult = uploadFile(file, key);
+        if (putObjectResult != null){
+            // 2.返回图片访问路径
+            String url = cosClientConfig.getHOST() +"/"+ key;
+            log.info("上传成功：{}", url);
+            return url;
+        }
+        return null;
+    }
+
     /**
      * 图片文件上传
      * @param file
@@ -56,12 +68,6 @@ public class CosManager {
         return putObjectResult;
     }
 
-
-    /**
-     * 图片文件下载
-     * @param key
-     * @return COSObject
-     */
     public COSObject downloadFile(String url) {
         // 1.获取存储桶名称
         String bucket = cosClientConfig.getBUCKET();

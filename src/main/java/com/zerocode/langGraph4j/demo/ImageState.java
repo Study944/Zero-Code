@@ -1,4 +1,4 @@
-package com.zerocode.langGraph4j;
+package com.zerocode.langGraph4j.demo;
 
 import org.bsc.langgraph4j.state.AgentState;
 import org.bsc.langgraph4j.state.Channels;
@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * 定义图表的状态
  */
-class SimpleState extends AgentState {
+class ImageState extends AgentState {
     public static final String MESSAGES_KEY = "messages";
 
     // 定义状态的架构。
@@ -18,7 +18,7 @@ class SimpleState extends AgentState {
             MESSAGES_KEY, Channels.appender(ArrayList::new)
     );
 
-    public SimpleState(Map<String, Object> initData) {
+    public ImageState(Map<String, Object> initData) {
         super(initData);
     }
 

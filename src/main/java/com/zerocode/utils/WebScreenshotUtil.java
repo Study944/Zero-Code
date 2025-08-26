@@ -23,6 +23,9 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.UUID;
 
+/**
+ * 截图工具类
+ */
 @Slf4j
 public class WebScreenshotUtil {
 

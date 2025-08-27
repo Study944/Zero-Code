@@ -7,6 +7,7 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,7 +45,21 @@ public class LangGraph4jServiceFactory {
         return AiServices.builder(ImageCollectorService.class)
                 .chatModel(dashscopeChatModel)
                 .tools(imageSearchTool, mermaidDiagramTool, unDrawIllustrationTool)
-
                 .build();
     }
+
+    @Bean
+    public CodeQualityCheckService codeQualityCheckService() {
+        return AiServices.builder(CodeQualityCheckService.class)
+                .chatModel(dashscopeChatModel)
+                .build();
+    }
+
+    @Bean
+    public ImageCollectorPlanService imageCollectorPlanService() {
+        return AiServices.builder(ImageCollectorPlanService.class)
+                .chatModel(dashscopeChatModel)
+                .build();
+    }
+
 }

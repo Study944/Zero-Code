@@ -8,9 +8,9 @@
 3. generateArchitectureDiagram - 根据技术主题生成架构图，用于展示系统结构和技术关系
 
 请根据用户的需求分析，优先选择与用户需求最相关的图片类型：
-- 如果涉及技术、系统、架构等内容，调用 generateArchitectureDiagram 生成架构图
-- 如果需要插图，调用 searchIllustrations 搜索插图
 - 如果需要内容相关图片，调用 searchContentImages 搜索图片
+- 如果需要插图，调用 searchIllustrations 搜索插图
+- 如果涉及技术、系统、架构等内容，调用 generateArchitectureDiagram 生成架构图
 
 只需要实现搜索图片并整合总结，不需要做其他的事情（比如用户需要生成网站，只需要搜索网站相关图片、插图和流程图）
 不能模拟工具调用而是需要根据需求真实调用提供的工具

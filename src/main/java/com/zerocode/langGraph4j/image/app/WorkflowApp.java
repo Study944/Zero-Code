@@ -17,6 +17,9 @@ import static org.bsc.langgraph4j.StateGraph.END;
 import static org.bsc.langgraph4j.StateGraph.START;
 import java.util.Map;
 
+/**
+ * 优化工作流
+ */
 @Slf4j
 public class WorkflowApp {
 

@@ -71,6 +71,12 @@ public class WorkflowContext implements Serializable {
      */
     private String errorMessage;
 
+    /**
+     * 质量检查结果
+     */
+    private QualityResult qualityResult;
+
+
     @Serial
     private static final long serialVersionUID = 1L;
 

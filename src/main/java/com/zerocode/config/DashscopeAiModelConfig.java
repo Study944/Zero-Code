@@ -44,7 +44,7 @@ public class DashscopeAiModelConfig {
                 .logRequests(true)
                 .logResponses(true)
                 .strictJsonSchema(true)
-                .responseFormat("json_object")
+//                .responseFormat("json_object")
                 .build();
     }
 }

@@ -17,6 +17,7 @@ import com.zerocode.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
@@ -194,6 +195,10 @@ public class AppController {
      * @return
      */
     @PostMapping("/list/good/app")
+    @Cacheable(
+            value = "goodAppList",
+            key = "T(com.zerocode.utils.CacheKeyUtils).generateKey(#appListMyAppDTO)"
+    )
     public BaseResponse<Page<AppVO>> listGoodAppVOByPage(@RequestBody AppListMyAppDTO appListMyAppDTO) {
         // 参数校验
         ThrowUtil.throwIf(appListMyAppDTO == null, ErrorCode.PARAMS_ERROR);

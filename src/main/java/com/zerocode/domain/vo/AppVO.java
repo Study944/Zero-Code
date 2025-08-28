@@ -2,10 +2,11 @@ package com.zerocode.domain.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public class AppVO {
+public class AppVO implements Serializable {
 
     /**
      * id

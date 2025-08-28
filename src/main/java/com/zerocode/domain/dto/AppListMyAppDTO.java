@@ -1,10 +1,11 @@
 package com.zerocode.domain.dto;
 
-import com.zerocode.domain.vo.UserVO;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class AppListMyAppDTO {
+public class AppListMyAppDTO implements Serializable {
 
     /**
      * 当前页

@@ -6,9 +6,6 @@ import com.zerocode.exception.ErrorCode;
 
 /**
  * 代码解析执行器
- * 根据代码生成类型执行相应的解析逻辑
- *
- * @author yupi
  */
 public class CodeParserExecutor {
 

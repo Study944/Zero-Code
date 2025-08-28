@@ -18,7 +18,6 @@ import static com.zerocode.constant.AppConstant.APP_PATH;
 
 /**
  * 文件写入工具
- * 支持 AI 通过工具调用的方式写入文件
  */
 @Slf4j
 @Component

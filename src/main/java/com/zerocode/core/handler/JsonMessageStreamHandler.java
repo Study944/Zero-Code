@@ -1,6 +1,5 @@
 package com.zerocode.core.handler;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -10,7 +9,6 @@ import com.zerocode.ai.tool.BaseTool;
 import com.zerocode.ai.tool.ToolManager;
 import com.zerocode.common.ThrowUtil;
 import com.zerocode.core.builder.VueProjectBuilder;
-import com.zerocode.domain.dto.AppUpdateDTO;
 import com.zerocode.domain.entity.App;
 import com.zerocode.domain.entity.User;
 import com.zerocode.domain.enums.ChatHistoryMessageTypeEnum;
@@ -24,9 +22,6 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 

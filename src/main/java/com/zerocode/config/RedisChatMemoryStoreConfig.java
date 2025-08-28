@@ -6,6 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * RedisChatMemoryStore（Redis存储AI对话历史）配置
+ */
 @Configuration
 @ConfigurationProperties(prefix = "spring.data.redis")
 @Data

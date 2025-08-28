@@ -5,12 +5,20 @@ import com.zerocode.ai.entity.MultiFileCodeResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 多文件代码解析器策略
+ */
 public class MultiFileCodeParserStrategy implements CodeParserStrategy<MultiFileCodeResult>{
 
     private static final Pattern HTML_CODE_PATTERN = Pattern.compile("```html\\s*\\n([\\s\\S]*?)```", Pattern.CASE_INSENSITIVE);
     private static final Pattern CSS_CODE_PATTERN = Pattern.compile("```css\\s*\\n([\\s\\S]*?)```", Pattern.CASE_INSENSITIVE);
     private static final Pattern JS_CODE_PATTERN = Pattern.compile("```(?:js|javascript)\\s*\\n([\\s\\S]*?)```", Pattern.CASE_INSENSITIVE);
 
+    /**
+     * 解析多文件代码
+     * @param codeContent
+     * @return
+     */
     @Override
     public MultiFileCodeResult parseCode(String codeContent) {
         MultiFileCodeResult result = new MultiFileCodeResult();

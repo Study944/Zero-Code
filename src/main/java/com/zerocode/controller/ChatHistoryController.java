@@ -17,9 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 对话历史 控制层。
- *
- * @author zxc
+ * 对话历史
  */
 @RestController
 @RequestMapping("/chatHistory")

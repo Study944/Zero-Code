@@ -7,6 +7,7 @@ import com.zerocode.ai.entity.GeneratorTypeEnum;
 import com.zerocode.exception.BusinessException;
 import com.zerocode.exception.ErrorCode;
 import com.zerocode.service.ChatHistoryService;
+import com.zerocode.utils.SpringContextUtil;
 import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
@@ -17,25 +18,14 @@ import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.swing.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Ai服务工厂类
+ * AIServices工厂类（初始化AIServices）
  */
 @Configuration
 public class AiGeneratorServiceFactory {
-
-    @Resource
-    private StreamingChatModel dashscopeStreamingChatModel;
-
-    @Resource
-    private ChatModel dashscopeChatModel;
-
-    @Resource
-    private StreamingChatModel deepSeekStreamingChatModel;
-
-    @Resource
-    private ChatModel deepSeekChatModel;
 
     @Resource
     private RedisChatMemoryStore redisChatMemoryStore;
@@ -47,7 +37,9 @@ public class AiGeneratorServiceFactory {
     private ToolManager toolManager;
 
 
-    // Caffeine缓存AIService
+    /**
+     * 使用Caffeine缓存Ai服务，避免重复创建
+     */
     private final Cache<Long, AiGeneratorService> aiServicesCache = Caffeine.newBuilder()
             .maximumSize(100)
             .expireAfterAccess(1, TimeUnit.HOURS)
@@ -56,9 +48,8 @@ public class AiGeneratorServiceFactory {
 
     /**
      * 获取Ai服务
-     *
-     * @param appId
-     * @return
+     * @param appId (每个应用对应一个AServices)
+     * @return Ai服务
      */
     public AiGeneratorService getAiGeneratorService(Long appId, GeneratorTypeEnum generatorTypeEnum) {
         return aiServicesCache.get(appId, key -> aiGeneratorService(appId, generatorTypeEnum));
@@ -66,20 +57,25 @@ public class AiGeneratorServiceFactory {
 
     /**
      * 创建Ai服务
-     *
      * @param appId
-     * @return
+     * @return Ai服务
      */
     private AiGeneratorService aiGeneratorService(Long appId, GeneratorTypeEnum generatorTypeEnum) {
+        // 初始化AI聊天历史缓存，使用Redis持久化
         MessageWindowChatMemory messageWindowChatMemory = MessageWindowChatMemory
                 .builder()
                 .chatMemoryStore(redisChatMemoryStore)
                 .id(appId)
                 .maxMessages(25)
                 .build();
+        // 从Mysql中加载AI聊天历史
         chatHistoryService.loadChatHistory(appId, messageWindowChatMemory);
+        // 根据生成类型初始化不同的Ai服务
         switch (generatorTypeEnum) {
             case REACT_PROJECT, VUE_PROJECT -> {
+                // 使用@Resource注解是单例模式，多例需要自己创建
+                StreamingChatModel dashscopeStreamingChatModel = SpringContextUtil.getBean("dashscopeStreamingChatModel", StreamingChatModel.class);
+                ChatModel dashscopeChatModel = SpringContextUtil.getBean("dashscopeChatModel", ChatModel.class);
                 return AiServices.builder(AiGeneratorService.class)
                         .streamingChatModel(dashscopeStreamingChatModel)
                         .chatModel(dashscopeChatModel)
@@ -94,6 +90,8 @@ public class AiGeneratorServiceFactory {
                         .build();
             }
             case HTML , MULTI_FILE -> {
+                // 使用@Resource注解是单例模式，多例需要自己创建
+                StreamingChatModel dashscopeStreamingChatModel = SpringContextUtil.getBean("dashscopeStreamingChatModel", StreamingChatModel.class);
                 return AiServices.builder(AiGeneratorService.class)
                         .streamingChatModel(dashscopeStreamingChatModel)
                         .chatMemoryProvider(messageId -> messageWindowChatMemory)
@@ -105,12 +103,12 @@ public class AiGeneratorServiceFactory {
     }
 
     /**
-     * 调用AIService创建Ai服务
-     *
+     * 调用AIService创建Ai服务 （旧）
      * @return Ai服务
      */
     @Bean
     public AiGeneratorService aiGenerateService() {
+        StreamingChatModel dashscopeStreamingChatModel = SpringContextUtil.getBean("dashscopeStreamingChatModel", StreamingChatModel.class);
         return AiServices.builder(AiGeneratorService.class)
                 .streamingChatModel(dashscopeStreamingChatModel)
                 .chatMemoryProvider(messageId -> MessageWindowChatMemory

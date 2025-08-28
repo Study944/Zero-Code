@@ -1,7 +1,5 @@
 package com.zerocode.controller;
 
-import com.zerocode.domain.entity.App;
-import com.zerocode.domain.vo.AppVO;
 import com.zerocode.service.AppService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,9 @@ import java.io.File;
 
 import static com.zerocode.constant.AppConstant.APP_PATH;
 
+/**
+ * 静态资源访问控制器（用于前端预览AI生成项目）
+ */
 @RestController
 @RequestMapping("/static")
 public class StaticResourceController {

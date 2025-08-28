@@ -19,5 +19,4 @@ public class AiResponseMessage extends StreamMessage{
         this.content = content;
     }
 
-
 }

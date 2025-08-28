@@ -18,7 +18,6 @@ import static com.zerocode.constant.AppConstant.APP_PATH;
 
 /**
  * 文件目录读取工具
- * 使用 HuTool 简化文件操作
  */
 @Slf4j
 @Component

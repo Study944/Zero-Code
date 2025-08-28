@@ -11,9 +11,6 @@ import reactor.core.publisher.Flux;
 
 /**
  * 流处理器执行器
- * 根据代码生成类型创建合适的流处理器：
- * 1. 传统的 Flux<String> 流（HTML、MULTI_FILE） -> SimpleTextStreamHandler
- * 2. TokenStream 格式的复杂流（VUE_PROJECT） -> JsonMessageStreamHandler
  */
 @Slf4j
 @Component
@@ -36,6 +33,7 @@ public class StreamHandlerExecutor {
     public Flux<String> doExecute(Flux<String> originFlux,
                                   ChatHistoryService chatHistoryService,
                                   long appId, User loginUser, GeneratorTypeEnum generatorTypeEnum) {
+        // 根据代码生成类型选择对应的流处理器
         return switch (generatorTypeEnum) {
             case VUE_PROJECT ,REACT_PROJECT-> // 使用注入的组件实例
                     jsonMessageStreamHandler.handle(originFlux, chatHistoryService, appId, loginUser);

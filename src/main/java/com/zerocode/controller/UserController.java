@@ -19,7 +19,7 @@ import com.zerocode.service.UserService;
 import java.util.List;
 
 /**
- * 用户控制层
+ * 用户
  */
 @RestController
 @RequestMapping("/user")

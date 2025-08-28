@@ -9,7 +9,7 @@ import reactor.core.publisher.Flux;
 
 /**
  * 工作流 SSE 控制器
- * 演示 LangGraph4j 工作流的流式输出功能
+ *  LangGraph4j 工作流的流式输出功能
  */
 @RestController
 @RequestMapping("/workflow")

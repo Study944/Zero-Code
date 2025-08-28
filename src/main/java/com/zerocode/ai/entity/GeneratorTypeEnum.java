@@ -3,7 +3,7 @@ package com.zerocode.ai.entity;
 import lombok.Getter;
 
 /**
- * 生成器类型枚举
+ * 生成模式类型枚举
  */
 @Getter
 public enum GeneratorTypeEnum {

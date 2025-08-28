@@ -3,6 +3,7 @@ package com.zerocode.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.mybatisflex.core.paginate.Page;
+import com.zerocode.annotation.UserRole;
 import com.zerocode.common.BaseResponse;
 import com.zerocode.common.ResultUtil;
 import com.zerocode.common.ThrowUtil;
@@ -23,6 +24,7 @@ import com.zerocode.service.AppService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +32,7 @@ import java.util.Map;
 import static com.zerocode.constant.AppConstant.GOOD_PRIORITY;
 
 /**
- * 应用 控制层。
- *
- * @author zxc
+ * 应用
  */
 @RestController
 @RequestMapping("/app")
@@ -94,6 +94,20 @@ public class AppController {
         return ResultUtil.success(res);
     }
 
+
+    @PutMapping("/setGoodApp/{appId}")
+    @UserRole(role = "admin")
+    public BaseResponse<Boolean> setGoodApp(@PathVariable Long appId, HttpServletRequest request) {
+        // 参数校验
+        ThrowUtil.throwIf(appId == null, ErrorCode.PARAMS_ERROR);
+        // 更新应用
+        App app = appService.getById(appId);
+        app.setPriority(GOOD_PRIORITY);
+        app.setUpdateTime(LocalDateTime.now());
+        boolean res = appService.updateById(app);
+        return ResultUtil.success(res);
+    }
+
     /**
      * 根据id查询应用
      *
@@ -134,6 +148,37 @@ public class AppController {
                             // 构建创建的用户信息
                             AppVO appVO = BeanUtil.copyProperties(app, AppVO.class);
                             appVO.setUserVO(BeanUtil.copyProperties(loginUser, UserVO.class));
+                            return appVO;
+                        }
+                )
+                .toList();
+        appVOPage.setRecords(appVOList);
+        return ResultUtil.success(appVOPage);
+    }
+
+    /**
+     * 获取所有应用列表
+     *
+     * @param appListMyAppDTO
+     * @return
+     */
+    @PostMapping("/list/all/app")
+    public BaseResponse<Page<AppVO>> listAllAppByPage(@RequestBody AppListMyAppDTO appListMyAppDTO) {
+        // 参数校验
+        ThrowUtil.throwIf(appListMyAppDTO == null, ErrorCode.PARAMS_ERROR);
+        // 获取应用
+        Page<App> appPage = appService.page(
+                new Page<>(appListMyAppDTO.getCurrent(), appListMyAppDTO.getPageSize()),
+                appService.getQueryWrapper(appListMyAppDTO)
+        );
+        // 设置返回值
+        Page<AppVO> appVOPage = new Page<>(appPage.getPageNumber(), appPage.getPageSize(), appPage.getTotalRow());
+        List<AppVO> appVOList = appPage.getRecords().stream()
+                .map(app -> {
+                            // 构建创建的用户信息
+                            AppVO appVO = BeanUtil.copyProperties(app, AppVO.class);
+                            User user = userService.getById(app.getUserId());
+                            appVO.setUserVO(BeanUtil.copyProperties(user, UserVO.class));
                             return appVO;
                         }
                 )

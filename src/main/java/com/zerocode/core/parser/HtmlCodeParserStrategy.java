@@ -5,6 +5,9 @@ import com.zerocode.ai.entity.HtmlCodeResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * HTML代码解析策略
+ */
 public class HtmlCodeParserStrategy implements CodeParserStrategy<HtmlCodeResult>{
 
     private static final Pattern HTML_CODE_PATTERN = Pattern.compile("```html\\s*\\n([\\s\\S]*?)```", Pattern.CASE_INSENSITIVE);

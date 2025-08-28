@@ -15,9 +15,5 @@ public class AppUpdateDTO {
      */
     private String appName;
 
-    /**
-     * 应用推荐展示
-     */
-    private Integer priority;
 
 }

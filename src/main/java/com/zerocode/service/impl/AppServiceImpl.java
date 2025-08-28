@@ -108,7 +108,6 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         App newApp = new App();
         newApp.setId(appId);
         newApp.setAppName(appName);
-        if (loginUser.getUserRole().equals(ADMIN_ROLE)) newApp.setPriority(appUpdateDTO.getPriority());
         boolean update = this.updateById(newApp);
         return update;
     }

@@ -7,44 +7,60 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
+/**
+ * 阿里云dashscope模型配置
+ */
 @Configuration
 @ConfigurationProperties(prefix = "langchain4j.community.dashscope")
 @Data
 public class DashscopeAiModelConfig {
 
+    private String baseUrl;
+
     private String apiKey;
 
-    private String modelName = "deepseek-r1-0528";
+    private String modelName;
+
+    private Long timeout;
+
+    private Integer maxTokens;
+
+    private Double temperature;
+
+    private Boolean logRequests;
+
+    private Boolean logResponses;
 
     @Bean
+    // 开启多例模式，单例模式下同一时刻只有一个Model在工作
+    @Scope("prototype")
     public OpenAiStreamingChatModel dashscopeStreamingChatModel() {
-
         return OpenAiStreamingChatModel.builder()
-                .baseUrl("https://dashscope.aliyuncs.com/compatible-mode/v1")
+                .baseUrl(baseUrl)
                 .modelName(modelName)
                 .apiKey(apiKey)
-                .timeout(java.time.Duration.ofMinutes(5))
-                .maxTokens(8192)
-                .logRequests(true)
-                .logResponses(true)
-                .strictJsonSchema(true)
-//                .responseFormat("json_object")
+                .timeout(java.time.Duration.ofMinutes(timeout))
+                .maxTokens(maxTokens)
+                .temperature(temperature)
+                .logRequests(logRequests)
+                .logResponses(logResponses)
                 .build();
     }
 
     @Bean
+    @Scope("prototype")
     public OpenAiChatModel dashscopeChatModel() {
         return OpenAiChatModel.builder()
-                .baseUrl("https://dashscope.aliyuncs.com/compatible-mode/v1")
-                .modelName(modelName) // 模型名称
+                .baseUrl(baseUrl)
+                .modelName(modelName)
                 .apiKey(apiKey)
-                .timeout(java.time.Duration.ofMinutes(5))
-                .maxTokens(8192)
-                .logRequests(true)
-                .logResponses(true)
-                .strictJsonSchema(true)
-//                .responseFormat("json_object")
+                .timeout(java.time.Duration.ofMinutes(timeout))
+                .maxTokens(maxTokens)
+                .temperature(temperature)
+                .logRequests(logRequests)
+                .logResponses(logResponses)
                 .build();
     }
 }

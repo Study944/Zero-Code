@@ -2,6 +2,8 @@ package com.zerocode.ai.aiservices;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.zerocode.ai.guardrail.PromptSafetyInputGuardrail;
+import com.zerocode.ai.guardrail.RetryOutputGuardrail;
 import com.zerocode.ai.tool.*;
 import com.zerocode.ai.entity.GeneratorTypeEnum;
 import com.zerocode.exception.BusinessException;
@@ -48,6 +50,7 @@ public class AiGeneratorServiceFactory {
 
     /**
      * 获取Ai服务
+     *
      * @param appId (每个应用对应一个AServices)
      * @return Ai服务
      */
@@ -57,6 +60,7 @@ public class AiGeneratorServiceFactory {
 
     /**
      * 创建Ai服务
+     *
      * @param appId
      * @return Ai服务
      */
@@ -87,23 +91,29 @@ public class AiGeneratorServiceFactory {
                                         toolExecutionRequest.name() + "工具不存在")
                         )
                         .chatMemoryProvider(messageId -> messageWindowChatMemory)
+                        .inputGuardrails(new PromptSafetyInputGuardrail())
+                        //.outputGuardrails(new RetryOutputGuardrail())
                         .build();
             }
-            case HTML , MULTI_FILE -> {
+            case HTML, MULTI_FILE -> {
                 // 使用@Resource注解是单例模式，多例需要自己创建
                 StreamingChatModel dashscopeStreamingChatModel = SpringContextUtil.getBean("dashscopeStreamingChatModel", StreamingChatModel.class);
                 return AiServices.builder(AiGeneratorService.class)
                         .streamingChatModel(dashscopeStreamingChatModel)
                         .chatMemoryProvider(messageId -> messageWindowChatMemory)
+                        .inputGuardrails(new PromptSafetyInputGuardrail())
+                        //.outputGuardrails(new RetryOutputGuardrail())
                         .build();
             }
-            default -> throw new BusinessException(ErrorCode.PARAMS_ERROR, "不支持的生成模式"+generatorTypeEnum.getValue());
+            default ->
+                    throw new BusinessException(ErrorCode.PARAMS_ERROR, "不支持的生成模式" + generatorTypeEnum.getValue());
         }
 
     }
 
     /**
      * 调用AIService创建Ai服务 （旧）
+     *
      * @return Ai服务
      */
     @Bean

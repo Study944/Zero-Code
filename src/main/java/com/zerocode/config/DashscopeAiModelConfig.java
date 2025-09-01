@@ -46,6 +46,7 @@ public class DashscopeAiModelConfig {
                 .temperature(temperature)
                 .logRequests(logRequests)
                 .logResponses(logResponses)
+                .strictJsonSchema(true)
                 .build();
     }
 

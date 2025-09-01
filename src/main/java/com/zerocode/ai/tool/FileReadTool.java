@@ -62,7 +62,7 @@ public class FileReadTool extends BaseTool{
         String relativeDirPath = arguments.getStr("relativeFilePath");
         String toolName = getToolName();
         return String.format("""
-                        [工具调用] %s %s
+                        🔍 正在读取文件 %s `%s`
                         """, toolName,relativeDirPath);
     }
 }

@@ -7,6 +7,8 @@ spring:
     name: zero-code
   profiles:
     active: local
+  servlet:
+    context-path: /api
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/zero_code

@@ -1,5 +1,7 @@
 package com.zerocode.constant;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.io.File;
 
 /**
@@ -7,13 +9,14 @@ import java.io.File;
  */
 public interface AppConstant {
 
-    public static final Integer DEFAULT_PRIORITY = 0;
+    Integer DEFAULT_PRIORITY = 0;
 
-    public static final Integer GOOD_PRIORITY = 99;
+    Integer GOOD_PRIORITY = 99;
 
-    public static final String APP_PATH = System.getProperty("user.dir") + File.separator + "tmp"+File.separator+"code";
+    String APP_PATH = System.getProperty("user.dir") + File.separator + "tmp"+File.separator+"code";
 
-    public static final String DEPLOY_PATH = System.getProperty("user.dir") + File.separator + "tmp"+File.separator+"deploy";
+    String DEPLOY_PATH = System.getProperty("user.dir") + File.separator + "tmp"+File.separator+"deploy";
 
-    public static final String DEPLOY_HOST = "http://localhost";
+    @Value("${code.deploy-host}")
+    String DEPLOY_HOST = "http://localhost";
 }

@@ -11,6 +11,7 @@ import com.zerocode.service.ChatHistoryService;
 import com.zerocode.service.ScreenshotService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import static com.zerocode.constant.AppConstant.APP_PATH;
  * 处理 HTML 和 MULTI_FILE 类型的流式响应
  */
 @Slf4j
+@Component
 public class SimpleTextStreamHandler {
 
     @Resource

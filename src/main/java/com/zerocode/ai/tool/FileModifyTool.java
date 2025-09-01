@@ -72,7 +72,7 @@ public class FileModifyTool extends BaseTool{
         String newContent = arguments.getStr("newContent");
         String toolName = getToolName();
         return String.format("""
-                        [工具调用] %s %s
+                        🛠️ 修改文件 %s `%s`
                         替换前：
                         ```
                         %s

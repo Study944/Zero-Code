@@ -13,6 +13,8 @@ import com.zerocode.domain.entity.User;
 import com.zerocode.domain.vo.AppVO;
 import com.zerocode.domain.vo.UserVO;
 import com.zerocode.exception.ErrorCode;
+import com.zerocode.ratelimiter.annotation.RateLimit;
+import com.zerocode.ratelimiter.model.RateLimiterTypeEnum;
 import com.zerocode.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -226,10 +228,13 @@ public class AppController {
 
     /**
      * 生成代码
-     *
-     * @return
+     * @param appId 应用id
+     * @param userPrompt 用户输入
+     * @param request
+     * @return sse响应
      */
     @GetMapping(value = "/generate/code",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @RateLimit(rateLimitCount = 2, timeWindowSeconds = 60,type = RateLimiterTypeEnum.API,errorMsg = "请求过于频繁，请稍后再试")
     public Flux<ServerSentEvent<String>> generateCode(@RequestParam Long appId,
                                                       @RequestParam String userPrompt,
                                                       HttpServletRequest request) {

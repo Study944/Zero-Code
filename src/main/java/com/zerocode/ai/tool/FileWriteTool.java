@@ -70,7 +70,7 @@ public class FileWriteTool extends BaseTool{
         String content = arguments.getStr("content");
         String toolName = getToolName();
         return String.format("""
-                        [工具调用] %s %s
+                        📝 创建文件 %s `%s`
                         ```%s
                         %s
                         ```

@@ -119,7 +119,7 @@ public class FileDeleteTool extends BaseTool{
         String relativeFilePath = arguments.getStr("relativeFilePath");
         String toolName = getToolName();
         return String.format("""
-                        [工具调用] %s %s
+                        🗑️ 即将删除文件 %s `%s`
                         """, toolName,relativeFilePath);
     }
 }

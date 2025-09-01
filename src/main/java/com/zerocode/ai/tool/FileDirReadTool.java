@@ -114,7 +114,7 @@ public class FileDirReadTool extends BaseTool{
         String relativeDirPath = arguments.getStr("relativeDirPath");
         String toolName = getToolName();
         return String.format("""
-                        [工具调用] %s %s
+                        📁 正在浏览目录 %s `%s`
                         """, toolName,relativeDirPath);
     }
 }

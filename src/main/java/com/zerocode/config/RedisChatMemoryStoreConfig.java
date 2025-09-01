@@ -20,12 +20,19 @@ public class RedisChatMemoryStoreConfig {
     // key默认超时时间
     private long ttl;
 
+    private String password;
+
+
     @Bean
     public RedisChatMemoryStore redisChatMemoryStore() {
-        return RedisChatMemoryStore.builder()
+        RedisChatMemoryStore.Builder builder = RedisChatMemoryStore.builder()
                 .host(host)
                 .port(port)
                 .ttl(ttl)
-                .build();
+                .password(password);
+        if (password != null){
+            builder.user("default");
+        }
+        return builder.build();
     }
 }

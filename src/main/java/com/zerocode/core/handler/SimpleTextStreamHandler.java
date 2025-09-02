@@ -62,8 +62,9 @@ public class SimpleTextStreamHandler {
                         String projectPath = String.format("%s/%s_%s", APP_PATH, appById.getGenerateType(), appById.getId());
                         File projectDir = new File(projectPath);
                         ThrowUtil.throwIf(!projectDir.exists(), ErrorCode.SYSTEM_ERROR,"项目目录不存在：" + projectPath);
+                        String projectUrl = "http://localhost:8111/static/" + appById.getGenerateType()+"_" + appId + File.separator;
                         // 截图
-                        String screenshotUrl = screenshotService.takeScreenshot(projectPath);
+                        String screenshotUrl = screenshotService.takeScreenshot(projectUrl);
                         // 更新应用封面
                         App newApp = new App();
                         newApp.setId(appId);

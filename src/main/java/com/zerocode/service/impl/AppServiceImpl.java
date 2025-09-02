@@ -163,10 +163,11 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         ThrowUtil.throwIf(appId == null || appId <= 0, ErrorCode.PARAMS_ERROR);
         String userPrompt = appGenerateCodeDTO.getUserPrompt();
         ThrowUtil.throwIf(StrUtil.isBlank(userPrompt), ErrorCode.PARAMS_ERROR, "用户提示语不能为空");
-        //身份校验
+        //身份校验，应用创建者和管理员可以生成代码
         App app = this.getById(appId);
         ThrowUtil.throwIf(app == null, ErrorCode.NOT_FOUND_ERROR, "应用不存在");
-        ThrowUtil.throwIf(!app.getUserId().equals(loginUser.getId()), ErrorCode.NO_AUTH_ERROR);
+        ThrowUtil.throwIf(!app.getUserId().equals(loginUser.getId())&&
+                !loginUser.getUserRole().equals(ADMIN_ROLE), ErrorCode.NO_AUTH_ERROR);
         String generateType = app.getGenerateType();
         GeneratorTypeEnum generatorTypeEnum = GeneratorTypeEnum.getByValue(generateType);
         // 保存对话历史--用户输入userPrompt
